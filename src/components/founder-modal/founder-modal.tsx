@@ -1,24 +1,24 @@
 import { Button, Cascader, Form, Input, Select } from 'antd';
+import { FormInstance } from 'antd/lib/form';
 import Modal from 'antd/lib/modal/Modal';
 import axios from 'axios';
 import * as React from 'react';
 import { Component } from 'react';
-import { Client, ClientType } from '../../models/client.model';
-import './enterpreneur-modal.css';
-import { FormInstance } from 'antd/lib/form';
+import { Client } from '../../models/client.model';
+import './founder-modal.css';
 import { Founder } from '../../models/founder.model';
 
-type ClientModalProps = {
+type FounderModalProps = {
     visible: boolean;
     handleOk: () => void;
     handleCancel: () => void;
-    clientId: Client | null | undefined;
+    founderId: number | null | undefined;
 }
 
-type ClientModalState = {
+type FounderModalState = {
     loading: boolean;
-    founders: Founder[];
-    founderOpitons: any[];
+    clients: Client[];
+    clientOpitons: any[];
     currentType: string | null;
 }
 
@@ -27,77 +27,58 @@ const layout = {
     wrapperCol: { span: 16 },
 };
 
-export class EnterpreneurModal extends Component<ClientModalProps, ClientModalState> {
+export class FounderModal extends Component<FounderModalProps, FounderModalState> {
     state = {
         loading: false,
-        founders: [],
-        founderOpitons: [],
+        clients: [],
+        clientOpitons: [],
         currentType: null
     };
+    founder: Founder;
     formRef = React.createRef<FormInstance>();
-    client: Client;
     onTypeChange = () => {
-        this.setState({ currentType: this.formRef.current?.getFieldsValue().type });
+        this.setState({ currentType: this.formRef.current?.getFieldsValue().type[0] });
     }
-    onFinish = (client: Client) => {
-        if (client.founders && client.founders.length > 0) {
-            const founders: Founder | undefined[] = [];
-            client.founders.forEach((founderId) => {
-                const founder: Founder | undefined = this.state.founders.find((founder: Founder) => founder.id === founderId);
-                founders.push(founder);
-            });
-            client.founders = founders;
-        } else if (client.founders) {
-            const founder: Founder | undefined = this.state.founders.find((founder: Founder) => founder.id === client.founders);
-            client.founders = [founder];
-        }
-        if (this.client) {
-            client.id = this.client.id;
-            client.type = ClientType[client.type];
+    onFinish = (founder: Founder) => {
+        if (this.founder) {
+            founder.id = this.founder.id;
             this.setState({ loading: true });
-            axios.put('/api/Client/' + this.client.id, client).then((res) => {
+            axios.put('/api/Founder/' + this.founder.id, founder).then((res) => {
                 this.setState({ loading: false });
                 this.props.handleOk();
             });
         } else {
-            client.type = ClientType[client.type];
             this.setState({ loading: true });
-            axios.post('/api/Client', client).then((res) => {
+            axios.post('/api/Founder', founder).then((res) => {
                 this.setState({ loading: false });
                 this.props.handleOk();
             });
         }
     };
     componentDidMount() {
-        if (this.props.clientId) {
-            axios.get('/api/Client/'+this.props.clientId).then((res: { data: Client }) => {
-                const founders: number[] = res.data.founders.map((founder: Founder) => {
-                    return founder.id;
-                });
-                res.data.founders = res.data.type === ClientType.UL ? founders : founders[0];
-                
-                this.client = res.data;
-                this.setState({ currentType: this.client.type });
+        if (this.props.founderId) {
+            axios.get('/api/Founder/' + this.props.founderId).then((res: { data: Founder }) => {
+                this.founder = res.data;
             });
         }
-        axios.get('/api/Founder').then((res: { data: Founder[] }) => {
-            this.setState({ founders: res.data });
-            const founderOpitons = res.data.map((founder: Founder) => {
+        axios.get('/api/Client').then((res: { data: Client[] }) => {
+            this.setState({ clients: res.data });
+            const clientOpitons = res.data.map((founder: Client) => {
                 return {
                     label: founder.name,
                     value: founder.id
                 }
             });
-            this.setState({ founderOpitons: founderOpitons });
+            this.setState({ clientOpitons: clientOpitons });
         });
 
     }
     render() {
-        if (this.state.founderOpitons.length > 0 && (this.props.clientId && this.client) || !this.props.clientId) {
+        if (this.state.clientOpitons.length > 0 && (this.props.founderId && this.founder) || !this.props.founderId) {
             return (
                 <Modal
                     visible={this.props.visible}
-                    title={this.client ? 'Редактировать клиента' : 'Добавить клиента'}
+                    title={this.founder ? 'Редактировать учредителя' : 'Добавить учредителя'}
                     onOk={this.props.handleOk}
                     onCancel={this.props.handleCancel}
                     footer={null}
@@ -107,7 +88,7 @@ export class EnterpreneurModal extends Component<ClientModalProps, ClientModalSt
                         wrapperCol={{ span: 14 }}
                         layout="horizontal"
                         onFinish={this.onFinish}
-                        initialValues={this.client}
+                        initialValues={this.founder}
                         ref={this.formRef}
                         {...layout}
                     >
@@ -140,42 +121,19 @@ export class EnterpreneurModal extends Component<ClientModalProps, ClientModalSt
                             <Input />
                         </Form.Item>
                         <Form.Item
-                            label="Тип"
-                            name="type"
+                            label="Клиент"
+                            name="clientId"
                             rules={[
                                 {
                                     required: true,
-                                    message: 'Необходимо выбрать тип',
+                                    message: 'Вам необходимо выбрать клиента',
                                 },
                             ]}
                         >
                             <Select
-                                placeholder="Выберите тип"
-                                onChange={this.onTypeChange}
-                                options={[
-                                    {
-                                        value: ClientType.IP,
-                                        label: 'Индивидуальный предприниматель',
-                                    },
-                                    {
-                                        value: ClientType.UL,
-                                        label: 'Юридическое лицо',
-                                    }
-                                ]}
+                                placeholder="Выберите клиента"
+                                options={this.state.clientOpitons}
                             ></Select>
-                        </Form.Item>
-                        <Form.Item
-                            label="Учредители"
-                            name="founders"
-                        >
-                            { this.state.currentType === 'UL' ? <Select
-                                placeholder="Выберите учредителя"
-                                mode="multiple"
-                                options={this.state.founderOpitons}
-                            /> : <Select
-                                placeholder="Выберите учредителя"
-                                options={this.state.founderOpitons}
-                            />}
                         </Form.Item>
                         <div className="ant-modal-footer">
                             <Button

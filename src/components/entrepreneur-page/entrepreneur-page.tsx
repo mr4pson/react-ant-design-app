@@ -14,7 +14,7 @@ class EnterpreneurPage extends Component<{}, ClientState> {
     state = {
         clients: [],
         visible: false,
-        currentClient: null
+        currentClientId: null
     };
 
     columns = [
@@ -67,7 +67,7 @@ class EnterpreneurPage extends Component<{}, ClientState> {
         if (currentClient) {
             currentClient.type = currentClient.type === ClientType.IPFormated ? [ClientType.IP] : [ClientType.UL];
         }
-        this.setState({ currentClient: currentClient });
+        this.setState({ currentClientId: currentClient.id });
         this.showModal();
     }
     showModal = () => {
@@ -82,7 +82,7 @@ class EnterpreneurPage extends Component<{}, ClientState> {
     };
 
     handleCancel = () => {
-        this.setState({ currentClient: null });
+        this.setState({ currentClientId: null });
         this.setState({ visible: false });
     };
     componentDidMount() {
@@ -116,7 +116,7 @@ class EnterpreneurPage extends Component<{}, ClientState> {
                     visible={this.state.visible}
                     handleCancel={this.handleCancel}
                     handleOk={this.handleOk}
-                    client={this.state.currentClient}
+                    clientId={this.state.currentClientId}
                 /> : null}
             </Content>
         )

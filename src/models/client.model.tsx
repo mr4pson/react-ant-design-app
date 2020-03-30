@@ -1,3 +1,5 @@
+import { Founder } from "./founder.model";
+
 export enum ClientType {
     IP = 'IP',
     UL = 'UL',
@@ -9,15 +11,15 @@ export interface Client {
     key?: number;
     id: number;
     tin: string;
-    type: ClientType | ClientType[];
+    type: ClientType;
     name: string;
     createDate: string;
     updateDate: string;
-    founders: any[];
+    founders: any[] | any;
 }
 
 export type ClientState = {
     clients: Client[];
     visible: boolean;
-    currentClient: Client | null | undefined;
+    currentClientId: number | null | undefined;
 }
