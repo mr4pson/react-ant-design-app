@@ -1,7 +1,7 @@
 import { MenuFoldOutlined, MenuUnfoldOutlined, TeamOutlined, UserOutlined } from '@ant-design/icons';
 import { Layout, Menu } from 'antd';
 import * as React from 'react';
-import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Link, Route, Switch, Redirect } from "react-router-dom";
 import './App.css';
 import EnterpreneurPage from './components/entrepreneur-page/entrepreneur-page';
 import { FounderPage } from './components/founders-page/founder-page';
@@ -45,6 +45,9 @@ class App extends React.Component {
               })}
             </Header>
             <Switch>
+              <Route exact path="/">
+                <Redirect to="/clients" />
+              </Route>
               <Route path="/clients">
                 <EnterpreneurPage />
               </Route>
