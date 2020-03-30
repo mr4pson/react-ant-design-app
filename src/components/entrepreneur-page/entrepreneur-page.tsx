@@ -111,7 +111,11 @@ class EnterpreneurPage extends Component<{}, ClientState> {
                         type="primary"
                     >Добавить</Button>
                 </div>
-                <Table dataSource={this.state.clients} columns={this.columns} />
+                <Table 
+                    dataSource={this.state.clients} 
+                    columns={this.columns} 
+                    loading={this.state.clients.length === 0}
+                />
                 {this.state.visible ? <EnterpreneurModal
                     visible={this.state.visible}
                     handleCancel={this.handleCancel}

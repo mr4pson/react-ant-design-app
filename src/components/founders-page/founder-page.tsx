@@ -119,7 +119,11 @@ export class FounderPage extends React.Component<{}, FounderState> {
                         type="primary"
                     >Добавить</Button>
                 </div>
-                <Table dataSource={this.state.founders} columns={this.columns} />
+                <Table 
+                    dataSource={this.state.founders} 
+                    columns={this.columns}
+                    loading={this.state.founders.length === 0}
+                />
                 {this.state.visible ? <FounderModal
                     visible={this.state.visible}
                     handleCancel={this.handleCancel}
