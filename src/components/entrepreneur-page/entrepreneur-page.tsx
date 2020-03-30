@@ -103,7 +103,7 @@ class EnterpreneurPage extends Component<{}, ClientState> {
     render() {
         return (
             <Content className="page-layout-background">
-                <h1>Индивидуальные предприниматели</h1>
+                <h1>Клиенты</h1>
                 <div className="add-btn-container">
                     <Button
                         onClick={this.showModal}

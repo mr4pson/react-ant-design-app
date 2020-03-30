@@ -27,7 +27,7 @@ class App extends React.Component {
             <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
               <Menu.Item key="1">
                 <UserOutlined />
-                <span>ИП</span>
+                <span>Клиенты</span>
                 <Link to="/clients" />
               </Menu.Item>
               <Menu.Item key="2">
