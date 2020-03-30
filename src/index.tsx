@@ -6,17 +6,19 @@ import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import { enthusiasm } from './reducers/index';
 import { StoreState } from './types/index';
-
+import { EnthusiasmAction } from './actions/index';
+import 'antd/dist/antd.css';
+import App from './App';
 import './index.css';
 
-const store = createStore<StoreState>(enthusiasm, {
+const store = createStore<StoreState, EnthusiasmAction, any, any>(enthusiasm, {
   enthusiasmLevel: 1,
-  languageName: 'TypeScript',
+  languageName: 'TypeScript'
 });
 
 ReactDOM.render(
-  <Provider store={store}>
-    <Hello />
-  </Provider>,
+  <>
+    <App/>
+  </>,
   document.getElementById('root') as HTMLElement
 );

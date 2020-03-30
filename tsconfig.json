@@ -11,8 +11,9 @@
     "rootDir": "src",
     "noImplicitReturns": true,
     "noImplicitThis": true,
-    "noImplicitAny": true,
-    "strictNullChecks": true
+    "noImplicitAny": false,
+    "strictNullChecks": true,
+    "esModuleInterop": true
   },
   "exclude": [
     "node_modules",
